@@ -45,13 +45,21 @@
             align-items: center;
             border-bottom: 1px solid #475569;
             padding-bottom: 10px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .nav-btn {
             background: #475569;
             color: white;
             border: none;
-            padding: 6px 12px;
+            padding: 8px 12px;
             border-radius: 6px;
             cursor: pointer;
             font-size: 13px;
@@ -67,11 +75,10 @@
             color: #000;
             font-weight: bold;
             animation: pulse 1s infinite alternate;
-            margin-right: 6px;
         }
 
         @keyframes pulse {
-            from { opacity: 0.7; transform: scale(1); }
+            from { opacity: 0.75; transform: scale(1); }
             to { opacity: 1; transform: scale(1.05); }
         }
 
@@ -138,7 +145,7 @@
             color: var(--text);
             font-size: 14px;
             box-sizing: border-box;
-            margin-top: 5px;
+            margin-top: 6px;
         }
 
         button {
@@ -149,7 +156,7 @@
             transition: background 0.2s;
         }
         button:hover { background: #2563eb; }
-        button:disabled { background: #475569; cursor: not-allowed; }
+        button:disabled { background: #475569; cursor: not-allowed; opacity: 0.6; }
 
         .section {
             border-top: 1px solid #475569;
@@ -157,13 +164,13 @@
         }
 
         .history-list {
-            max-height: 120px;
+            max-height: 130px;
             overflow-y: auto;
             background: #0f172a;
             padding: 10px;
             border-radius: 8px;
             font-size: 13px;
-            margin-top: 5px;
+            margin-top: 6px;
         }
 
         .dev-section-box {
@@ -178,7 +185,7 @@
             margin-top: 0;
             color: #60a5fa;
             border-bottom: 1px solid #374151;
-            padding-bottom: 5px;
+            padding-bottom: 6px;
         }
 
         .filtered-item {
@@ -209,9 +216,10 @@
         .del-btn {
             background: var(--danger);
             width: auto;
-            padding: 4px 8px;
-            font-size: 11px;
+            padding: 5px 9px;
+            font-size: 12px;
             margin-top: 0;
+            flex-shrink: 0;
         }
         .del-btn:hover { background: #dc2626; }
         
@@ -222,6 +230,11 @@
             display: none;
             margin-top: 10px;
         }
+
+        .row-btns {
+            display: flex;
+            gap: 8px;
+        }
     </style>
 </head>
 <body>
@@ -229,41 +242,41 @@
 <div class="container">
     <div class="header-nav">
         <h3 id="appTitle" style="margin: 0;">🤖 AI User Space</h3>
-        <div style="display: flex; align-items: center;">
-            <button id="secretDevBtn" class="nav-btn" onclick="openDevAuth()">⚙️ Панель разработчика</button>
-            <button id="navToggleBtn" class="nav-btn" onclick="switchPage('dev')">Вход для разработчика</button>
+        <div class="nav-controls">
+            <button type="button" id="secretDevBtn" class="nav-btn">⚙️ Панель разработчика</button>
+            <button type="button" id="navToggleBtn" class="nav-btn">Вход для разработчика</button>
         </div>
     </div>
 
     <!-- ПОЛЬЗОВАТЕЛЬСКАЯ СТРАНИЦА -->
     <div id="userPage" class="page active">
         <div class="mascot-box">
-            <img id="mascotImg" src="" alt="Mascot" class="mascot-avatar" onerror="this.src='https://via.placeholder.com/110?text=AI'">
+            <img id="mascotImg" src="" alt="Mascot" class="mascot-avatar">
             <div class="speech-bubble" id="speechBubble">Привет! Задай мне вопрос или отправь идею.</div>
         </div>
 
         <div class="section">
-            <label><b>Задать вопрос ИИ:</b></label>
-            <input type="text" id="userInput" placeholder="Напишите ваш вопрос..." onkeypress="if(event.key === 'Enter') askAI()">
-            <button id="askBtn" onclick="askAI()">Спросить</button>
+            <label for="userInput"><b>Задать вопрос ИИ:</b></label>
+            <input type="text" id="userInput" placeholder="Напишите ваш вопрос...">
+            <button type="button" id="askBtn">Спросить</button>
             <div id="banMessage"></div>
         </div>
 
         <div class="section">
-            <label><b>Отправить идею, проблему или вопрос разработчику:</b></label>
+            <label for="feedbackType"><b>Отправить идею, проблему или вопрос разработчику:</b></label>
             <select id="feedbackType">
                 <option value="идея">💡 Идея</option>
                 <option value="проблема">⚠️ Проблема / Баг</option>
                 <option value="вопрос">❓ Вопрос разработчику</option>
             </select>
             <textarea id="userFeedback" placeholder="Опишите вашу идею или проблему подробно..." rows="3"></textarea>
-            <button onclick="sendUserFeedback()" style="background: var(--accent);">Отправить разработчику</button>
+            <button type="button" id="sendFeedbackBtn" style="background: var(--accent);">Отправить разработчику</button>
         </div>
 
         <div class="section">
             <label><b>История поиска:</b></label>
             <div class="history-list" id="historyList"></div>
-            <button onclick="clearHistory()" style="background: #64748b; font-size: 11px; padding: 6px;">Очистить историю</button>
+            <button type="button" id="clearHistoryBtn" style="background: #64748b; font-size: 12px; padding: 7px;">Очистить историю</button>
         </div>
     </div>
 
@@ -271,23 +284,23 @@
     <div id="devPage" class="page">
         <h3 style="margin: 0;">🔐 Защищенная Панель Разработчика</h3>
         <div id="devAuthBox">
-            <p style="font-size: 13px; color: #94a3b8;">Введите пароль для доступа к настройкам системы:</p>
-            <input type="password" id="devPasswordInput" placeholder="Введите пароль..." onkeypress="if(event.key === 'Enter') checkDevPassword()">
-            <button onclick="checkDevPassword()" style="margin-top: 8px;">Войти</button>
-            <button onclick="switchPage('user')" style="background: #64748b; margin-top: 5px;">Назад к пользователю</button>
+            <p style="font-size: 13px; color: #94a3b8; margin-bottom: 6px;">Введите пароль для доступа к настройкам:</p>
+            <input type="password" id="devPasswordInput" placeholder="Пароль...">
+            <button type="button" id="loginDevBtn" style="margin-top: 8px;">Войти</button>
+            <button type="button" id="backToUserFromAuthBtn" style="background: #64748b; margin-top: 6px;">Назад к пользователю</button>
         </div>
 
         <div id="devContentBox" style="display: none;">
-            <div style="display: flex; gap: 8px; margin-bottom: 15px;">
-                <button onclick="switchPage('user')" style="background: #64748b; font-size: 12px;">⬅️ На главную</button>
-                <button onclick="logoutDev()" style="background: var(--danger); font-size: 12px;">🔒 Выйти из панели</button>
+            <div class="row-btns" style="margin-bottom: 15px;">
+                <button type="button" id="backToUserBtn" style="background: #64748b; font-size: 12px;">⬅️ На главную</button>
+                <button type="button" id="logoutDevBtn" style="background: var(--danger); font-size: 12px;">🔒 Выйти из панели</button>
             </div>
 
             <!-- НАСТРОЙКА ИМЕНИ МАСКОТА -->
             <div class="dev-section-box">
                 <h4>🏷️ Имя маскота</h4>
                 <input type="text" id="mascotRealName" placeholder="Введите имя маскота...">
-                <button onclick="updateMascotName()" style="margin-top: 8px;">Сохранить имя</button>
+                <button type="button" id="saveNameBtn" style="margin-top: 8px;">Сохранить имя</button>
             </div>
 
             <!-- СТРОКА 1: Архив знаний -->
@@ -297,16 +310,14 @@
                 <input type="text" id="kbSubcategory" placeholder="Подкатегория">
                 <input type="text" id="kbKeyword" placeholder="Ключевое слово / Вопрос">
                 <textarea id="kbAnswer" placeholder="Ответ ИИ..." rows="2"></textarea>
-                <button onclick="addNewKnowledge()" style="margin-top: 8px;">Сохранить / Обновить</button>
-                <div style="margin-top: 15px;">
-                    <div id="kbListContainer" style="max-height: 180px; overflow-y: auto;"></div>
-                </div>
+                <button type="button" id="saveKbBtn" style="margin-top: 8px;">Сохранить / Обновить</button>
+                <div id="kbListContainer" style="margin-top: 12px; max-height: 180px; overflow-y: auto;"></div>
             </div>
 
             <!-- СТРОКА 2: Управление маскотом, репликами и ИЗОБРАЖЕНИЯМИ -->
             <div class="dev-section-box">
                 <h4>🎨 2. Настройка маскота (Реплики и Картинки)</h4>
-                <select id="mascotEmotionSelect" onchange="loadEmotionDataForEdit()">
+                <select id="mascotEmotionSelect">
                     <option value="neutral">Нейтральный</option>
                     <option value="joy">Радость</option>
                     <option value="confused">Недопонимание</option>
@@ -316,15 +327,15 @@
                 </select>
                 <input type="text" id="mascotCustomText" placeholder="Текст реплики для выбранного настроения">
                 <input type="text" id="mascotCustomImg" placeholder="Ссылка или путь к картинке (.png / .jpg)">
-                <button onclick="updateMascotConfig()" style="margin-top: 8px;">Сохранить настройки настроения</button>
+                <button type="button" id="saveMascotConfigBtn" style="margin-top: 8px;">Сохранить настройки настроения</button>
             </div>
 
             <!-- СТРОКА 3: Аналитика -->
             <div class="dev-section-box">
                 <h4>📊 3. Аналитика отзывов</h4>
-                <div style="display: flex; gap: 8px;">
-                    <button onclick="renderAnalytics()" style="background: #2563eb; font-size: 12px; padding: 6px;">🔄 Обновить</button>
-                    <button onclick="clearAnalytics()" style="background: #64748b; font-size: 12px; padding: 6px;">🗑️ Очистить</button>
+                <div class="row-btns">
+                    <button type="button" id="refreshAnalyticsBtn" style="background: #2563eb; font-size: 12px; padding: 7px;">🔄 Обновить</button>
+                    <button type="button" id="clearAnalyticsBtn" style="background: #64748b; font-size: 12px; padding: 7px;">🗑️ Очистить</button>
                 </div>
                 <div id="analyticsContainer" style="margin-top: 10px; max-height: 200px; overflow-y: auto;"></div>
             </div>
@@ -333,39 +344,56 @@
 </div>
 
 <script>
-    let knowledgeBase = JSON.parse(localStorage.getItem('ai_kb_v5')) || {
+document.addEventListener("DOMContentLoaded", function() {
+    // Безопасное чтение из localStorage
+    function loadJSON(key, defaultValue) {
+        try {
+            const raw = localStorage.getItem(key);
+            return raw ? JSON.parse(raw) : defaultValue;
+        } catch (e) {
+            return defaultValue;
+        }
+    }
+
+    const defaultKB = {
         "привет": { cat: "Общие", sub: "Приветствия", ans: "Привет! Я твой цифровой помощник." },
         "как дела": { cat: "Общие", sub: "Состояние", ans: "Всё отлично, обрабатываю данные!" },
         "когда триумф восхода луны": { cat: "Секрет", sub: "Пасхалка", ans: "Поздравляю! Панель разработчика разблокирована сверху." }
     };
 
-    let mascotName = localStorage.getItem('ai_mascot_name') || "лучик";
-
-    let mascotConfig = JSON.parse(localStorage.getItem('ai_mascot_full_config')) || {
-        "neutral": { text: "Привет! Задай мне вопрос или отправь идею.", img: "https://via.placeholder.com/110?text=Neutral" },
-        "joy": { text: "Ой, спасибо большое! Мне очень приятно слышать такие теплые слова! 🥰", img: "https://via.placeholder.com/110?text=Joy" },
-        "confused": { text: "Я не совсем понял вопрос... Попробуй сформулировать иначе!", img: "https://via.placeholder.com/110?text=Confused" },
-        "angry-1": { text: "Эй, полегче на поворотах! Зачем грубить? Уровень злости: 1/3.", img: "https://via.placeholder.com/110?text=Angry1" },
-        "angry-2": { text: "Ты снова за своё?! Прекрати это немедленно! Уровень злости: 2/3.", img: "https://via.placeholder.com/110?text=Angry2" },
-        "angry-3": { text: "ВСЁ! Хватит с меня! Ты заблокирован за оскорбления на 30 минут! 😡", img: "https://via.placeholder.com/110?text=Angry3" }
+    const defaultMascotConfig = {
+        "neutral": { text: "Привет! Задай мне вопрос или отправь идею.", img: "https://via.placeholder.com/110/3b82f6/ffffff?text=AI" },
+        "joy": { text: "Ой, спасибо большое! Мне очень приятно слышать такие теплые слова! 🥰", img: "https://via.placeholder.com/110/10b981/ffffff?text=Joy" },
+        "confused": { text: "Я не совсем понял вопрос... Попробуй сформулировать иначе!", img: "https://via.placeholder.com/110/f59e0b/ffffff?text=?" },
+        "angry-1": { text: "Эй, полегче на поворотах! Зачем грубить? Уровень злости: 1/3.", img: "https://via.placeholder.com/110/f97316/ffffff?text=1/3" },
+        "angry-2": { text: "Ты снова за своё?! Прекрати это немедленно! Уровень злости: 2/3.", img: "https://via.placeholder.com/110/ef4444/ffffff?text=2/3" },
+        "angry-3": { text: "ВСЁ! Хватит с меня! Ты заблокирован за оскорбления на 30 минут! 😡", img: "https://via.placeholder.com/110/991b1b/ffffff?text=BAN" }
     };
 
-    let history = JSON.parse(localStorage.getItem('ai_history_v5')) || [];
-    let userFeedbackList = JSON.parse(localStorage.getItem('ai_feedback_v5')) || [];
-    let badQueryCount = parseInt(localStorage.getItem('ai_bad_count_v5')) || 0;
-    let banUntil = parseInt(localStorage.getItem('ai_ban_until_v5')) || 0;
+    let knowledgeBase = loadJSON('ai_kb_v6', defaultKB);
+    let mascotName = localStorage.getItem('ai_mascot_name_v6') || "лучик";
+    let mascotConfig = loadJSON('ai_mascot_config_v6', defaultMascotConfig);
+    let history = loadJSON('ai_history_v6', []);
+    let userFeedbackList = loadJSON('ai_feedback_v6', []);
+    let badQueryCount = parseInt(localStorage.getItem('ai_bad_count_v6'), 10) || 0;
+    let banUntil = parseInt(localStorage.getItem('ai_ban_until_v6'), 10) || 0;
     let banTimer = null;
 
-    document.getElementById('mascotRealName').value = mascotName;
-    checkBanStatus();
-    updateHistoryUI();
-    setEmotion('neutral', false); // false — не озвучивать при первой загрузке страницы
-    loadEmotionDataForEdit();
+    // Элементы интерфейса
+    const mascotImg = document.getElementById('mascotImg');
+    const speechBubble = document.getElementById('speechBubble');
+    const userInput = document.getElementById('userInput');
+    const askBtn = document.getElementById('askBtn');
+    const banMessage = document.getElementById('banMessage');
+
+    mascotImg.onerror = function() {
+        this.src = 'https://via.placeholder.com/110/3b82f6/ffffff?text=AI';
+    };
 
     function switchPage(pageName) {
         document.getElementById('userPage').classList.remove('active');
         document.getElementById('devPage').classList.remove('active');
-        
+
         if (pageName === 'user') {
             document.getElementById('userPage').classList.add('active');
             document.getElementById('appTitle').innerText = "🤖 AI User Space";
@@ -379,124 +407,103 @@
         }
     }
 
-    function openDevAuth() { 
-        switchPage('dev'); 
-    }
-
-    function checkDevPassword() {
-        const passInput = document.getElementById('devPasswordInput');
-        if (passInput.value === "dev2026") {
-            document.getElementById('devAuthBox').style.display = 'none';
-            document.getElementById('devContentBox').style.display = 'block';
-            passInput.value = "";
-            renderAnalytics();
-            renderKbList();
-        } else {
-            alert('Неверный пароль!');
-            passInput.value = "";
-        }
-    }
-
-    function logoutDev() {
-        document.getElementById('devAuthBox').style.display = 'block';
-        document.getElementById('devContentBox').style.display = 'none';
-        switchPage('user');
-    }
-
     function checkBanStatus() {
         clearTimeout(banTimer);
-        let now = new Date().getTime();
-        let inputField = document.getElementById('userInput');
-        let askBtn = document.getElementById('askBtn');
-        let banMsg = document.getElementById('banMessage');
+        const now = Date.now();
 
         if (now < banUntil) {
-            let minutesLeft = Math.ceil((banUntil - now) / 60000);
-            inputField.disabled = true;
+            const minutesLeft = Math.ceil((banUntil - now) / 60000);
+            userInput.disabled = true;
             askBtn.disabled = true;
-            banMsg.style.display = 'block';
-            banMsg.innerText = `⚠️ Вы заблокированы за оскорбления. Осталось минут: ${minutesLeft}`;
+            banMessage.style.display = 'block';
+            banMessage.innerText = `⚠️ Вы заблокированы за оскорбления. Осталось минут: ${minutesLeft}`;
             banTimer = setTimeout(checkBanStatus, 5000);
         } else {
-            inputField.disabled = false;
+            userInput.disabled = false;
             askBtn.disabled = false;
-            banMsg.style.display = 'none';
-            if (banUntil !== 0 && now >= banUntil) {
+            banMessage.style.display = 'none';
+            if (banUntil !== 0) {
                 badQueryCount = 0;
                 banUntil = 0;
-                localStorage.setItem('ai_bad_count_v5', 0);
-                localStorage.setItem('ai_ban_until_v5', 0);
+                localStorage.setItem('ai_bad_count_v6', '0');
+                localStorage.setItem('ai_ban_until_v6', '0');
             }
         }
     }
 
+    function speakText(text) {
+        try {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'ru-RU';
+                window.speechSynthesis.speak(utterance);
+            }
+        } catch (e) {
+            // Игнорируем ошибку синтеза речи, если браузер блокирует
+        }
+    }
+
     function setEmotion(state, shouldSpeak = true) {
-        const img = document.getElementById('mascotImg');
-        const bubble = document.getElementById('speechBubble');
-        
-        let configItem = mascotConfig[state] || mascotConfig["neutral"];
-        bubble.innerText = configItem.text;
-        img.src = configItem.img;
-        
+        const configItem = mascotConfig[state] || mascotConfig["neutral"];
+        speechBubble.innerText = configItem.text;
+        mascotImg.src = configItem.img;
+
         if (shouldSpeak) {
             speakText(configItem.text);
         }
 
-        img.className = "mascot-avatar";
-        if (state === 'neutral') img.classList.add('neutral');
-        else if (state === 'joy') img.classList.add('joy-anim');
-        else if (state === 'confused') img.classList.add('confused-anim');
-        else if (state === 'angry-1') img.classList.add('angry-anim-1');
-        else if (state === 'angry-2') img.classList.add('angry-anim-2');
-        else if (state === 'angry-3') img.classList.add('angry-anim-3');
-    }
-
-    function speakText(text) {
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
-            let utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'ru-RU';
-            window.speechSynthesis.speak(utterance);
-        }
+        mascotImg.className = "mascot-avatar";
+        if (state === 'joy') mascotImg.classList.add('joy-anim');
+        else if (state === 'confused') mascotImg.classList.add('confused-anim');
+        else if (state === 'angry-1') mascotImg.classList.add('angry-anim-1');
+        else if (state === 'angry-2') mascotImg.classList.add('angry-anim-2');
+        else if (state === 'angry-3') mascotImg.classList.add('angry-anim-3');
     }
 
     function askAI() {
-        if (new Date().getTime() < banUntil) return;
+        if (Date.now() < banUntil) return;
 
-        const input = document.getElementById('userInput');
-        const rawText = input.value.trim();
+        const rawText = userInput.value.trim();
         const query = rawText.toLowerCase();
         if (!query) return;
 
         const secretPhrase = "когда триумф восхода луны";
-
         const badWords = ["дурак", "тупой", "идиот", "ненавижу", "мразь", "сука", "блять", "черт", "тупица", "урод", "дебил", "фигня", "задолбал"];
         const compliments = ["спасибо", "пожалуйста", "лучший", "умничка", "потрясающий", "крутой", "прекрасный", "милый", "великолепно", "отлично"];
 
-        let hasBadWord = badWords.some(word => query.includes(word));
-        let hasCompliment = compliments.some(word => query.includes(word));
-        let mentionsName = query.includes(mascotName.toLowerCase());
+        const hasBadWord = badWords.some(word => query.includes(word));
+        const hasCompliment = compliments.some(word => query.includes(word));
+        const mentionsName = query.includes(mascotName.toLowerCase());
 
-        // 1. Проверка на секретную фразу (срабатывает без обязательного упоминания имени)
         if (query.includes(secretPhrase)) {
             document.getElementById('secretDevBtn').style.display = 'inline-block';
-            const img = document.getElementById('mascotImg');
-            const bubble = document.getElementById('speechBubble');
-            let ansText = knowledgeBase[secretPhrase] ? knowledgeBase[secretPhrase].ans : "Панель разработчика разблокирована!";
-            bubble.innerText = ansText;
-            img.src = mascotConfig['joy'].img;
-            img.className = "mascot-avatar joy-anim";
+            const ansText = knowledgeBase[secretPhrase] ? knowledgeBase[secretPhrase].ans : "Панель разработчика разблокирована!";
+            speechBubble.innerText = ansText;
+            mascotImg.src = mascotConfig['joy'].img;
+            mascotImg.className = "mascot-avatar joy-anim";
             speakText(ansText);
-        }
-        // 2. Проверка на грубость
-        else if (hasBadWord) {
+        } else if (hasBadWord) {
             badQueryCount++;
-            localStorage.setItem('ai_bad_count_v5', badQueryCount);
+            localStorage.setItem('ai_bad_count_v6', String(badQueryCount));
 
             if (badQueryCount === 1) {
-                setEmotion('angry-1');
+                setEmotion('angry-1', true);
             } else if (badQueryCount >= 2 && badQueryCount < 5) {
-                setEmotion('angry-2');
+                setEmotion('angry-2', true);
             } else if (badQueryCount >= 5) {
-                banUntil = new Date().getTime() + (30 * 60 * 1000);
-                localStorage.setItem('ai_
+                banUntil = Date.now() + (30 * 60 * 1000);
+                localStorage.setItem('ai_ban_until_v6', String(banUntil));
+                setEmotion('angry-3', true);
+                checkBanStatus();
+            }
+        } else if (hasCompliment) {
+            setEmotion('joy', true);
+        } else if (!mentionsName) {
+            const confText = "Хм, кажется, ты забыл обратиться ко мне по имени...";
+            speechBubble.innerText = confText;
+            mascotImg.src = mascotConfig['confused'].img;
+            mascotImg.className = "mascot-avatar confused-anim";
+            speakText(confText);
+        } else {
+            const foundKey = Object.keys(knowledgeBase).find(key => query.includes(key))
