@@ -217,7 +217,7 @@
     <!-- ПОЛЬЗОВАТЕЛЬСКАЯ СТРАНИЦА -->
     <div id="userPage" class="page active">
         <div class="mascot-box">
-            <img id="mascotImg" src="" alt="Mascot" class="mascot-avatar" onerror="this.src='https://via.placeholder.com/110?text=AI'">
+            <img id="mascotImg" src="neutral.png" alt="Mascot" class="mascot-avatar" onerror="this.src='https://via.placeholder.com/110?text=AI'">
             <div class="speech-bubble" id="speechBubble">Привет! Задай мне вопрос или отправь идею. (Секрет: когда триумф восхода луны)</div>
         </div>
 
@@ -291,7 +291,7 @@
                     <option value="angry-3">Злость Уровень 3 (Бан)</option>
                 </select>
                 <input type="text" id="mascotCustomText" placeholder="Текст реплики для выбранного настроения" style="margin-top: 5px;">
-                <input type="text" id="mascotCustomImg" placeholder="Ссылка или путь к картинке (.png / .jpg)" style="margin-top: 5px;">
+                <input type="text" id="mascotCustomImg" placeholder="Путь к картинке (например: neutral.png)" style="margin-top: 5px;">
                 <button onclick="updateMascotConfig()" style="margin-top: 8px;">Сохранить настройки настроения</button>
             </div>
 
@@ -306,7 +306,7 @@
 </div>
 
 <script>
-    let knowledgeBase = JSON.parse(localStorage.getItem('ai_kb_v5')) || {
+    let knowledgeBase = JSON.parse(localStorage.getItem('ai_kb_v6')) || {
         "привет": { cat: "Общие", sub: "Приветствия", ans: "Привет! Я твой цифровой помощник." },
         "как дела": { cat: "Общие", sub: "Состояние", ans: "Всё отлично, обрабатываю данные!" },
         "когда триумф восхода луны": { cat: "Секрет", sub: "Пасхалка", ans: "Поздравляю! Панель разработчика разблокирована сверху." }
@@ -314,25 +314,24 @@
 
     let mascotName = localStorage.getItem('ai_mascot_name') || "лучик";
 
-    // Хранилище реплик и картинок для каждой эмоции
-    let mascotConfig = JSON.parse(localStorage.getItem('ai_mascot_full_config')) || {
-        "neutral": { text: "Привет! Задай мне вопрос или отправь идею.", img: "https://via.placeholder.com/110?text=Neutral" },
-        "joy": { text: "Ой, спасибо большое! Мне очень приятно слышать такие теплые слова! 🥰", img: "https://via.placeholder.com/110?text=Joy" },
-        "confused": { text: "Я не понимаю этот вопрос или ты не назвал меня по моему имени...", img: "https://via.placeholder.com/110?text=Confused" },
-        "angry-1": { text: "Эй, полегче на поворотах! Зачем обзываться или материться? Уровень злости: 1/3.", img: "https://via.placeholder.com/110?text=Angry1" },
-        "angry-2": { text: "Ты снова за своё?! Прекрати это немедленно! Уровень злости: 2/3.", img: "https://via.placeholder.com/110?text=Angry2" },
-        "angry-3": { text: "ВСЁ! Хватит с меня! Ты заблокирован за оскорбления на 30 минут! 😡", img: "https://via.placeholder.com/110?text=Angry3" }
+    let mascotConfig = JSON.parse(localStorage.getItem('ai_mascot_full_config_v6')) || {
+        "neutral": { text: "Привет! Задай мне вопрос или отправь идею.", img: "neutral.png" },
+        "joy": { text: "Ой, спасибо большое! Мне очень приятно слышать такие теплые слова! 🥰", img: "joy.png" },
+        "confused": { text: "Я не понимаю этот вопрос или ты не назвал меня по моему имени...", img: "neutral.png" },
+        "angry-1": { text: "Эй, полегче на поворотах! Зачем обзываться или материться? Уровень злости: 1/3.", img: "angry-1.png" },
+        "angry-2": { text: "Ты снова за своё?! Прекрати это немедленно! Уровень злости: 2/3.", img: "angry-2.png" },
+        "angry-3": { text: "ВСЁ! Хватит с меня! Ты заблокирован за оскорбления на 30 минут! 😡", img: "angry-3.png" }
     };
 
-    let history = JSON.parse(localStorage.getItem('ai_history_v5')) || [];
-    let userFeedbackList = JSON.parse(localStorage.getItem('ai_feedback_v5')) || [];
-    let badQueryCount = parseInt(localStorage.getItem('ai_bad_count_v5')) || 0;
-    let banUntil = parseInt(localStorage.getItem('ai_ban_until_v5')) || 0;
+    let history = JSON.parse(localStorage.getItem('ai_history_v6')) || [];
+    let userFeedbackList = JSON.parse(localStorage.getItem('ai_feedback_v6')) || [];
+    let badQueryCount = parseInt(localStorage.getItem('ai_bad_count_v6')) || 0;
+    let banUntil = parseInt(localStorage.getItem('ai_ban_until_v6')) || 0;
 
     document.getElementById('mascotRealName').value = mascotName;
     checkBanStatus();
     updateHistoryUI();
-    setEmotion('neutral'); // Установка стартовой эмоции и картинки
+    setEmotion('neutral');
     loadEmotionDataForEdit();
 
     function switchPage(pageName) {
@@ -385,8 +384,8 @@
             if (banUntil !== 0 && now >= banUntil) {
                 badQueryCount = 0;
                 banUntil = 0;
-                localStorage.setItem('ai_bad_count_v5', 0);
-                localStorage.setItem('ai_ban_until_v5', 0);
+                localStorage.setItem('ai_bad_count_v6', 0);
+                localStorage.setItem('ai_ban_until_v6', 0);
             }
         }
     }
@@ -397,7 +396,7 @@
         
         let configItem = mascotConfig[state] || mascotConfig["neutral"];
         bubble.innerText = configItem.text;
-        img.src = configItem.img;
+        img.src = configItem.img || "neutral.png";
         
         speakText(configItem.text);
 
@@ -439,7 +438,7 @@
 
         if (hasBadWord) {
             badQueryCount++;
-            localStorage.setItem('ai_bad_count_v5', badQueryCount);
+            localStorage.setItem('ai_bad_count_v6', badQueryCount);
 
             if (badQueryCount === 1) {
                 setEmotion('angry-1');
@@ -447,19 +446,18 @@
                 setEmotion('angry-2');
             } else if (badQueryCount >= 5) {
                 banUntil = new Date().getTime() + (30 * 60 * 1000);
-                localStorage.setItem('ai_ban_until_v5', banUntil);
+                localStorage.setItem('ai_ban_until_v6', banUntil);
                 setEmotion('angry-3');
                 checkBanStatus();
             }
         } else if (hasCompliment) {
             setEmotion('joy');
         } else if (!mentionsName) {
-            // Если забыл имя, временно подставим текст недопонимания, но оставим картинку confused
             const img = document.getElementById('mascotImg');
             const bubble = document.getElementById('speechBubble');
             let confText = `Эй, а где же мое имя (${mascotName}) в твоем вопросе?`;
             bubble.innerText = confText;
-            img.src = mascotConfig['confused'].img;
+            img.src = mascotConfig['confused'].img || "neutral.png";
             img.className = "mascot-avatar confused-anim";
             speakText(confText);
         } else {
@@ -469,7 +467,7 @@
                 const bubble = document.getElementById('speechBubble');
                 let ansText = knowledgeBase[foundKey].ans;
                 bubble.innerText = ansText;
-                img.src = mascotConfig['neutral'].img;
+                img.src = mascotConfig['neutral'].img || "neutral.png";
                 img.className = "mascot-avatar neutral";
                 speakText(ansText);
             } else {
@@ -479,7 +477,7 @@
 
         history.unshift(`Вопрос: ${input.value}`);
         if (history.length > 20) history.pop();
-        localStorage.setItem('ai_history_v5', JSON.stringify(history));
+        localStorage.setItem('ai_history_v6', JSON.stringify(history));
         updateHistoryUI();
         input.value = "";
     }
@@ -491,7 +489,7 @@
 
         let priority = type === 'проблема' ? 'высокий' : 'низкий';
         userFeedbackList.push({ type, text, priority, time: new Date().toLocaleTimeString() });
-        localStorage.setItem('ai_feedback_v5', JSON.stringify(userFeedbackList));
+        localStorage.setItem('ai_feedback_v6', JSON.stringify(userFeedbackList));
         setEmotion('joy');
         document.getElementById('userFeedback').value = "";
     }
@@ -503,82 +501,9 @@
 
     function clearHistory() {
         history = [];
-        localStorage.removeItem('ai_history_v5');
+        localStorage.removeItem('ai_history_v6');
         updateHistoryUI();
     }
 
     function updateMascotName() {
-        let newName = document.getElementById('mascotRealName').value.trim();
-        if (newName) {
-            mascotName = newName;
-            localStorage.setItem('ai_mascot_name', mascotName);
-            alert(`Имя маскота успешно изменено на: ${mascotName}`);
-        }
-    }
-
-    function addNewKnowledge() {
-        const cat = document.getElementById('kbCategory').value.trim();
-        const sub = document.getElementById('kbSubcategory').value.trim();
-        const keyword = document.getElementById('kbKeyword').value.trim().toLowerCase();
-        const ans = document.getElementById('kbAnswer').value.trim();
-
-        if (!cat || !keyword || !ans) return;
-
-        knowledgeBase[keyword] = { cat, sub, ans };
-        localStorage.setItem('ai_kb_v5', JSON.stringify(knowledgeBase));
-        alert('Сохранено в архив!');
-        renderKbList();
-    }
-
-    function renderKbList() {
-        const container = document.getElementById('kbListContainer');
-        let keys = Object.keys(knowledgeBase);
-        let html = "";
-        keys.forEach(key => {
-            let item = knowledgeBase[key];
-            html += `<div class="kb-item-card"><div><b>[${item.cat}]</b> ${key}</div></div>`;
-        });
-        container.innerHTML = html;
-    }
-
-    // Загрузка текущих данных выбранного настроения в поля ввода панели разработчика
-    function loadEmotionDataForEdit() {
-        const emotion = document.getElementById('mascotEmotionSelect').value;
-        if (mascotConfig[emotion]) {
-            document.getElementById('mascotCustomText').value = mascotConfig[emotion].text;
-            document.getElementById('mascotCustomImg').value = mascotConfig[emotion].img;
-        }
-    }
-
-    // Сохранение реплики и картинки для выбранного настроения
-    function updateMascotConfig() {
-        const emotion = document.getElementById('mascotEmotionSelect').value;
-        const customText = document.getElementById('mascotCustomText').value.trim();
-        const customImg = document.getElementById('mascotCustomImg').value.trim();
-        
-        if (customText && customImg) {
-            mascotConfig[emotion] = { text: customText, img: customImg };
-            localStorage.setItem('ai_mascot_full_config', JSON.stringify(mascotConfig));
-            alert('Настройки маскота (текст и картинка) успешно обновлены!');
-            setEmotion(emotion); // Сразу показываем обновленный вид
-        } else {
-            alert('Заполните оба поля (текст и путь к картинке)!');
-        }
-    }
-
-    function renderAnalytics() {
-        const container = document.getElementById('analyticsContainer');
-        if (userFeedbackList.length === 0) {
-            container.innerHTML = `<div style="font-size:12px; color:#94a3b8;">Нет отзывов.</div>`;
-            return;
-        }
-        let html = "";
-        userFeedbackList.forEach(i => {
-            html += `<div class="filtered-item">[${i.type.toUpperCase()}] ${i.text}</div>`;
-        });
-        container.innerHTML = html;
-    }
-</script>
-
-</body>
-</html>
+        const nameInput = d
