@@ -55,6 +55,8 @@
             border-radius: 6px;
             cursor: pointer;
             font-size: 13px;
+            width: auto;
+            margin-top: 0;
         }
 
         .nav-btn:hover { background: #64748b; }
@@ -65,6 +67,7 @@
             color: #000;
             font-weight: bold;
             animation: pulse 1s infinite alternate;
+            margin-right: 6px;
         }
 
         @keyframes pulse {
@@ -92,6 +95,7 @@
             object-fit: cover;
             border: 3px solid var(--primary);
             background: #1e293b;
+            transition: border-color 0.3s;
         }
 
         .speech-bubble {
@@ -103,10 +107,11 @@
             text-align: center;
             max-width: 90%;
             min-height: 24px;
+            line-height: 1.4;
         }
 
-        .joy-anim { animation: bounce 0.5s infinite alternate; }
-        .confused-anim { transform: rotate(-5deg); }
+        .joy-anim { animation: bounce 0.5s infinite alternate; border-color: var(--accent); }
+        .confused-anim { transform: rotate(-5deg); border-color: var(--warning); }
         .angry-anim-1 { border-color: #f97316; }
         .angry-anim-2 { border-color: #ef4444; animation: shake 0.3s infinite; }
         .angry-anim-3 { border-color: #991b1b; animation: shake 0.1s infinite; transform: scale(1.05); }
@@ -144,6 +149,7 @@
             transition: background 0.2s;
         }
         button:hover { background: #2563eb; }
+        button:disabled { background: #475569; cursor: not-allowed; }
 
         .section {
             border-top: 1px solid #475569;
@@ -157,6 +163,7 @@
             padding: 10px;
             border-radius: 8px;
             font-size: 13px;
+            margin-top: 5px;
         }
 
         .dev-section-box {
@@ -183,16 +190,30 @@
             border-left: 3px solid var(--primary);
         }
 
+        .filtered-item.high-priority {
+            border-left-color: var(--danger);
+        }
+
         .kb-item-card {
             background: #1f2937;
-            padding: 10px;
+            padding: 8px 10px;
             border-radius: 6px;
             margin-top: 8px;
             font-size: 13px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 10px;
         }
+
+        .del-btn {
+            background: var(--danger);
+            width: auto;
+            padding: 4px 8px;
+            font-size: 11px;
+            margin-top: 0;
+        }
+        .del-btn:hover { background: #dc2626; }
         
         #banMessage {
             color: var(--danger);
@@ -207,8 +228,8 @@
 
 <div class="container">
     <div class="header-nav">
-        <h3 id="appTitle">🤖 AI User Space</h3>
-        <div>
+        <h3 id="appTitle" style="margin: 0;">🤖 AI User Space</h3>
+        <div style="display: flex; align-items: center;">
             <button id="secretDevBtn" class="nav-btn" onclick="openDevAuth()">⚙️ Панель разработчика</button>
             <button id="navToggleBtn" class="nav-btn" onclick="switchPage('dev')">Вход для разработчика</button>
         </div>
@@ -217,13 +238,13 @@
     <!-- ПОЛЬЗОВАТЕЛЬСКАЯ СТРАНИЦА -->
     <div id="userPage" class="page active">
         <div class="mascot-box">
-            <img id="mascotImg" src="neutral.png" alt="Mascot" class="mascot-avatar" onerror="this.src='https://via.placeholder.com/110?text=AI'">
-            <div class="speech-bubble" id="speechBubble">Привет! Задай мне вопрос или отправь идею. (Секрет: когда триумф восхода луны)</div>
+            <img id="mascotImg" src="" alt="Mascot" class="mascot-avatar" onerror="this.src='https://via.placeholder.com/110?text=AI'">
+            <div class="speech-bubble" id="speechBubble">Привет! Задай мне вопрос или отправь идею.</div>
         </div>
 
         <div class="section">
             <label><b>Задать вопрос ИИ:</b></label>
-            <input type="text" id="userInput" placeholder="Напишите ваш вопрос...">
+            <input type="text" id="userInput" placeholder="Напишите ваш вопрос..." onkeypress="if(event.key === 'Enter') askAI()">
             <button id="askBtn" onclick="askAI()">Спросить</button>
             <div id="banMessage"></div>
         </div>
@@ -235,34 +256,37 @@
                 <option value="проблема">⚠️ Проблема / Баг</option>
                 <option value="вопрос">❓ Вопрос разработчику</option>
             </select>
-            <textarea id="userFeedback" placeholder="Опишите вашу идею или проблему подробно..." style="margin-top: 5px;"></textarea>
-            <button onclick="sendUserFeedback()" style="background: var(--accent); margin-top: 5px;">Отправить разработчику</button>
+            <textarea id="userFeedback" placeholder="Опишите вашу идею или проблему подробно..." rows="3"></textarea>
+            <button onclick="sendUserFeedback()" style="background: var(--accent);">Отправить разработчику</button>
         </div>
 
         <div class="section">
             <label><b>История поиска:</b></label>
             <div class="history-list" id="historyList"></div>
-            <button onclick="clearHistory()" style="background: #64748b; font-size: 11px; padding: 4px; margin-top: 5px;">Очистить историю</button>
+            <button onclick="clearHistory()" style="background: #64748b; font-size: 11px; padding: 6px;">Очистить историю</button>
         </div>
     </div>
 
     <!-- СТРАНИЦА РАЗРАБОТЧИКА -->
     <div id="devPage" class="page">
-        <h3>🔐 Защищенная Панель Разработчика</h3>
+        <h3 style="margin: 0;">🔐 Защищенная Панель Разработчика</h3>
         <div id="devAuthBox">
-            <p style="font-size: 13px; color: #94a3b8;">Введите пароль разработчика (по умолчанию: <code>dev2026</code>):</p>
-            <input type="password" id="devPasswordInput" placeholder="Пароль...">
+            <p style="font-size: 13px; color: #94a3b8;">Введите пароль для доступа к настройкам системы:</p>
+            <input type="password" id="devPasswordInput" placeholder="Введите пароль..." onkeypress="if(event.key === 'Enter') checkDevPassword()">
             <button onclick="checkDevPassword()" style="margin-top: 8px;">Войти</button>
             <button onclick="switchPage('user')" style="background: #64748b; margin-top: 5px;">Назад к пользователю</button>
         </div>
 
         <div id="devContentBox" style="display: none;">
-            <button onclick="switchPage('user')" style="background: #64748b; margin-bottom: 15px; font-size: 12px;">⬅️ Вернуться на пользовательскую страницу</button>
+            <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+                <button onclick="switchPage('user')" style="background: #64748b; font-size: 12px;">⬅️ На главную</button>
+                <button onclick="logoutDev()" style="background: var(--danger); font-size: 12px;">🔒 Выйти из панели</button>
+            </div>
 
             <!-- НАСТРОЙКА ИМЕНИ МАСКОТА -->
             <div class="dev-section-box">
                 <h4>🏷️ Имя маскота</h4>
-                <input type="text" id="mascotRealName" placeholder="Например: лучик">
+                <input type="text" id="mascotRealName" placeholder="Введите имя маскота...">
                 <button onclick="updateMascotName()" style="margin-top: 8px;">Сохранить имя</button>
             </div>
 
@@ -272,10 +296,10 @@
                 <input type="text" id="kbCategory" placeholder="Категория">
                 <input type="text" id="kbSubcategory" placeholder="Подкатегория">
                 <input type="text" id="kbKeyword" placeholder="Ключевое слово / Вопрос">
-                <textarea id="kbAnswer" placeholder="Ответ ИИ..." style="margin-top: 5px;"></textarea>
+                <textarea id="kbAnswer" placeholder="Ответ ИИ..." rows="2"></textarea>
                 <button onclick="addNewKnowledge()" style="margin-top: 8px;">Сохранить / Обновить</button>
                 <div style="margin-top: 15px;">
-                    <div id="kbListContainer" style="max-height: 150px; overflow-y: auto;"></div>
+                    <div id="kbListContainer" style="max-height: 180px; overflow-y: auto;"></div>
                 </div>
             </div>
 
@@ -290,23 +314,26 @@
                     <option value="angry-2">Злость Уровень 2</option>
                     <option value="angry-3">Злость Уровень 3 (Бан)</option>
                 </select>
-                <input type="text" id="mascotCustomText" placeholder="Текст реплики для выбранного настроения" style="margin-top: 5px;">
-                <input type="text" id="mascotCustomImg" placeholder="Путь к картинке (например: neutral.png)" style="margin-top: 5px;">
+                <input type="text" id="mascotCustomText" placeholder="Текст реплики для выбранного настроения">
+                <input type="text" id="mascotCustomImg" placeholder="Ссылка или путь к картинке (.png / .jpg)">
                 <button onclick="updateMascotConfig()" style="margin-top: 8px;">Сохранить настройки настроения</button>
             </div>
 
             <!-- СТРОКА 3: Аналитика -->
             <div class="dev-section-box">
                 <h4>📊 3. Аналитика отзывов</h4>
-                <button onclick="renderAnalytics()" style="background: #2563eb; font-size: 12px; padding: 6px;">🔄 Обновить</button>
-                <div id="analyticsContainer" style="margin-top: 10px;"></div>
+                <div style="display: flex; gap: 8px;">
+                    <button onclick="renderAnalytics()" style="background: #2563eb; font-size: 12px; padding: 6px;">🔄 Обновить</button>
+                    <button onclick="clearAnalytics()" style="background: #64748b; font-size: 12px; padding: 6px;">🗑️ Очистить</button>
+                </div>
+                <div id="analyticsContainer" style="margin-top: 10px; max-height: 200px; overflow-y: auto;"></div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    let knowledgeBase = JSON.parse(localStorage.getItem('ai_kb_v6')) || {
+    let knowledgeBase = JSON.parse(localStorage.getItem('ai_kb_v5')) || {
         "привет": { cat: "Общие", sub: "Приветствия", ans: "Привет! Я твой цифровой помощник." },
         "как дела": { cat: "Общие", sub: "Состояние", ans: "Всё отлично, обрабатываю данные!" },
         "когда триумф восхода луны": { cat: "Секрет", sub: "Пасхалка", ans: "Поздравляю! Панель разработчика разблокирована сверху." }
@@ -314,24 +341,25 @@
 
     let mascotName = localStorage.getItem('ai_mascot_name') || "лучик";
 
-    let mascotConfig = JSON.parse(localStorage.getItem('ai_mascot_full_config_v6')) || {
-        "neutral": { text: "Привет! Задай мне вопрос или отправь идею.", img: "neutral.png" },
-        "joy": { text: "Ой, спасибо большое! Мне очень приятно слышать такие теплые слова! 🥰", img: "joy.png" },
-        "confused": { text: "Я не понимаю этот вопрос или ты не назвал меня по моему имени...", img: "neutral.png" },
-        "angry-1": { text: "Эй, полегче на поворотах! Зачем обзываться или материться? Уровень злости: 1/3.", img: "angry-1.png" },
-        "angry-2": { text: "Ты снова за своё?! Прекрати это немедленно! Уровень злости: 2/3.", img: "angry-2.png" },
-        "angry-3": { text: "ВСЁ! Хватит с меня! Ты заблокирован за оскорбления на 30 минут! 😡", img: "angry-3.png" }
+    let mascotConfig = JSON.parse(localStorage.getItem('ai_mascot_full_config')) || {
+        "neutral": { text: "Привет! Задай мне вопрос или отправь идею.", img: "https://via.placeholder.com/110?text=Neutral" },
+        "joy": { text: "Ой, спасибо большое! Мне очень приятно слышать такие теплые слова! 🥰", img: "https://via.placeholder.com/110?text=Joy" },
+        "confused": { text: "Я не совсем понял вопрос... Попробуй сформулировать иначе!", img: "https://via.placeholder.com/110?text=Confused" },
+        "angry-1": { text: "Эй, полегче на поворотах! Зачем грубить? Уровень злости: 1/3.", img: "https://via.placeholder.com/110?text=Angry1" },
+        "angry-2": { text: "Ты снова за своё?! Прекрати это немедленно! Уровень злости: 2/3.", img: "https://via.placeholder.com/110?text=Angry2" },
+        "angry-3": { text: "ВСЁ! Хватит с меня! Ты заблокирован за оскорбления на 30 минут! 😡", img: "https://via.placeholder.com/110?text=Angry3" }
     };
 
-    let history = JSON.parse(localStorage.getItem('ai_history_v6')) || [];
-    let userFeedbackList = JSON.parse(localStorage.getItem('ai_feedback_v6')) || [];
-    let badQueryCount = parseInt(localStorage.getItem('ai_bad_count_v6')) || 0;
-    let banUntil = parseInt(localStorage.getItem('ai_ban_until_v6')) || 0;
+    let history = JSON.parse(localStorage.getItem('ai_history_v5')) || [];
+    let userFeedbackList = JSON.parse(localStorage.getItem('ai_feedback_v5')) || [];
+    let badQueryCount = parseInt(localStorage.getItem('ai_bad_count_v5')) || 0;
+    let banUntil = parseInt(localStorage.getItem('ai_ban_until_v5')) || 0;
+    let banTimer = null;
 
     document.getElementById('mascotRealName').value = mascotName;
     checkBanStatus();
     updateHistoryUI();
-    setEmotion('neutral');
+    setEmotion('neutral', false); // false — не озвучивать при первой загрузке страницы
     loadEmotionDataForEdit();
 
     function switchPage(pageName) {
@@ -347,24 +375,36 @@
             document.getElementById('appTitle').innerText = "⚙️ Dev Hub";
             renderKbList();
             loadEmotionDataForEdit();
+            renderAnalytics();
         }
     }
 
-    function openDevAuth() { switchPage('dev'); }
+    function openDevAuth() { 
+        switchPage('dev'); 
+    }
 
     function checkDevPassword() {
-        const pass = document.getElementById('devPasswordInput').value;
-        if (pass === "dev2026") {
+        const passInput = document.getElementById('devPasswordInput');
+        if (passInput.value === "dev2026") {
             document.getElementById('devAuthBox').style.display = 'none';
             document.getElementById('devContentBox').style.display = 'block';
+            passInput.value = "";
             renderAnalytics();
             renderKbList();
         } else {
-            alert('Неверный пароль разработчика!');
+            alert('Неверный пароль!');
+            passInput.value = "";
         }
     }
 
+    function logoutDev() {
+        document.getElementById('devAuthBox').style.display = 'block';
+        document.getElementById('devContentBox').style.display = 'none';
+        switchPage('user');
+    }
+
     function checkBanStatus() {
+        clearTimeout(banTimer);
         let now = new Date().getTime();
         let inputField = document.getElementById('userInput');
         let askBtn = document.getElementById('askBtn');
@@ -375,8 +415,8 @@
             inputField.disabled = true;
             askBtn.disabled = true;
             banMsg.style.display = 'block';
-            banMsg.innerText = `⚠️ Вы заблокированы за оскорбления/мат. Осталось минут: ${minutesLeft}`;
-            setTimeout(checkBanStatus, 1000);
+            banMsg.innerText = `⚠️ Вы заблокированы за оскорбления. Осталось минут: ${minutesLeft}`;
+            banTimer = setTimeout(checkBanStatus, 5000);
         } else {
             inputField.disabled = false;
             askBtn.disabled = false;
@@ -384,21 +424,23 @@
             if (banUntil !== 0 && now >= banUntil) {
                 badQueryCount = 0;
                 banUntil = 0;
-                localStorage.setItem('ai_bad_count_v6', 0);
-                localStorage.setItem('ai_ban_until_v6', 0);
+                localStorage.setItem('ai_bad_count_v5', 0);
+                localStorage.setItem('ai_ban_until_v5', 0);
             }
         }
     }
 
-    function setEmotion(state) {
+    function setEmotion(state, shouldSpeak = true) {
         const img = document.getElementById('mascotImg');
         const bubble = document.getElementById('speechBubble');
         
         let configItem = mascotConfig[state] || mascotConfig["neutral"];
         bubble.innerText = configItem.text;
-        img.src = configItem.img || "neutral.png";
+        img.src = configItem.img;
         
-        speakText(configItem.text);
+        if (shouldSpeak) {
+            speakText(configItem.text);
+        }
 
         img.className = "mascot-avatar";
         if (state === 'neutral') img.classList.add('neutral');
@@ -422,12 +464,11 @@
         if (new Date().getTime() < banUntil) return;
 
         const input = document.getElementById('userInput');
-        const query = input.value.trim().toLowerCase();
+        const rawText = input.value.trim();
+        const query = rawText.toLowerCase();
         if (!query) return;
 
-        if (query.includes("когда триумф восхода луны")) {
-            document.getElementById('secretDevBtn').style.display = 'inline-block';
-        }
+        const secretPhrase = "когда триумф восхода луны";
 
         const badWords = ["дурак", "тупой", "идиот", "ненавижу", "мразь", "сука", "блять", "черт", "тупица", "урод", "дебил", "фигня", "задолбал"];
         const compliments = ["спасибо", "пожалуйста", "лучший", "умничка", "потрясающий", "крутой", "прекрасный", "милый", "великолепно", "отлично"];
@@ -436,9 +477,21 @@
         let hasCompliment = compliments.some(word => query.includes(word));
         let mentionsName = query.includes(mascotName.toLowerCase());
 
-        if (hasBadWord) {
+        // 1. Проверка на секретную фразу (срабатывает без обязательного упоминания имени)
+        if (query.includes(secretPhrase)) {
+            document.getElementById('secretDevBtn').style.display = 'inline-block';
+            const img = document.getElementById('mascotImg');
+            const bubble = document.getElementById('speechBubble');
+            let ansText = knowledgeBase[secretPhrase] ? knowledgeBase[secretPhrase].ans : "Панель разработчика разблокирована!";
+            bubble.innerText = ansText;
+            img.src = mascotConfig['joy'].img;
+            img.className = "mascot-avatar joy-anim";
+            speakText(ansText);
+        }
+        // 2. Проверка на грубость
+        else if (hasBadWord) {
             badQueryCount++;
-            localStorage.setItem('ai_bad_count_v6', badQueryCount);
+            localStorage.setItem('ai_bad_count_v5', badQueryCount);
 
             if (badQueryCount === 1) {
                 setEmotion('angry-1');
@@ -446,64 +499,4 @@
                 setEmotion('angry-2');
             } else if (badQueryCount >= 5) {
                 banUntil = new Date().getTime() + (30 * 60 * 1000);
-                localStorage.setItem('ai_ban_until_v6', banUntil);
-                setEmotion('angry-3');
-                checkBanStatus();
-            }
-        } else if (hasCompliment) {
-            setEmotion('joy');
-        } else if (!mentionsName) {
-            const img = document.getElementById('mascotImg');
-            const bubble = document.getElementById('speechBubble');
-            let confText = `Эй, а где же мое имя (${mascotName}) в твоем вопросе?`;
-            bubble.innerText = confText;
-            img.src = mascotConfig['confused'].img || "neutral.png";
-            img.className = "mascot-avatar confused-anim";
-            speakText(confText);
-        } else {
-            let foundKey = Object.keys(knowledgeBase).find(key => query.includes(key));
-            if (foundKey) {
-                const img = document.getElementById('mascotImg');
-                const bubble = document.getElementById('speechBubble');
-                let ansText = knowledgeBase[foundKey].ans;
-                bubble.innerText = ansText;
-                img.src = mascotConfig['neutral'].img || "neutral.png";
-                img.className = "mascot-avatar neutral";
-                speakText(ansText);
-            } else {
-                setEmotion('confused');
-            }
-        }
-
-        history.unshift(`Вопрос: ${input.value}`);
-        if (history.length > 20) history.pop();
-        localStorage.setItem('ai_history_v6', JSON.stringify(history));
-        updateHistoryUI();
-        input.value = "";
-    }
-
-    function sendUserFeedback() {
-        const type = document.getElementById('feedbackType').value;
-        const text = document.getElementById('userFeedback').value.trim();
-        if (!text) return;
-
-        let priority = type === 'проблема' ? 'высокий' : 'низкий';
-        userFeedbackList.push({ type, text, priority, time: new Date().toLocaleTimeString() });
-        localStorage.setItem('ai_feedback_v6', JSON.stringify(userFeedbackList));
-        setEmotion('joy');
-        document.getElementById('userFeedback').value = "";
-    }
-
-    function updateHistoryUI() {
-        const list = document.getElementById('historyList');
-        list.innerHTML = history.map(item => `<div>• ${item}</div>`).join('');
-    }
-
-    function clearHistory() {
-        history = [];
-        localStorage.removeItem('ai_history_v6');
-        updateHistoryUI();
-    }
-
-    function updateMascotName() {
-        const nameInput = d
+                localStorage.setItem('ai_
