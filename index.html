@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -45,14 +46,6 @@
             align-items: center;
             border-bottom: 1px solid #475569;
             padding-bottom: 10px;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .nav-controls {
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
         .nav-btn {
@@ -63,8 +56,6 @@
             border-radius: 6px;
             cursor: pointer;
             font-size: 13px;
-            width: auto;
-            margin-top: 0;
         }
 
         .nav-btn:hover { background: #64748b; }
@@ -74,12 +65,6 @@
             background: var(--warning);
             color: #000;
             font-weight: bold;
-            animation: pulse 1s infinite alternate;
-        }
-
-        @keyframes pulse {
-            from { opacity: 0.75; transform: scale(1); }
-            to { opacity: 1; transform: scale(1.05); }
         }
 
         .page { display: none; }
@@ -89,7 +74,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            position: relative;
             padding: 20px;
             border-radius: 12px;
             background: #334155;
@@ -102,7 +86,6 @@
             object-fit: cover;
             border: 3px solid var(--primary);
             background: #1e293b;
-            transition: border-color 0.3s;
         }
 
         .speech-bubble {
@@ -113,27 +96,6 @@
             font-size: 15px;
             text-align: center;
             max-width: 90%;
-            min-height: 24px;
-            line-height: 1.4;
-        }
-
-        .joy-anim { animation: bounce 0.5s infinite alternate; border-color: var(--accent); }
-        .confused-anim { transform: rotate(-5deg); border-color: var(--warning); }
-        .angry-anim-1 { border-color: #f97316; }
-        .angry-anim-2 { border-color: #ef4444; animation: shake 0.3s infinite; }
-        .angry-anim-3 { border-color: #991b1b; animation: shake 0.1s infinite; transform: scale(1.05); }
-
-        @keyframes bounce {
-            from { transform: translateY(0); }
-            to { transform: translateY(-8px); }
-        }
-
-        @keyframes shake {
-            0% { transform: translateX(0); }
-            25% { transform: translateX(-4px); }
-            50% { transform: translateX(4px); }
-            75% { transform: translateX(-4px); }
-            100% { transform: translateX(0); }
         }
 
         input, textarea, select, button {
@@ -153,10 +115,8 @@
             border: none;
             cursor: pointer;
             font-weight: bold;
-            transition: background 0.2s;
         }
         button:hover { background: #2563eb; }
-        button:disabled { background: #475569; cursor: not-allowed; opacity: 0.6; }
 
         .section {
             border-top: 1px solid #475569;
@@ -164,7 +124,7 @@
         }
 
         .history-list {
-            max-height: 130px;
+            max-height: 120px;
             overflow-y: auto;
             background: #0f172a;
             padding: 10px;
@@ -185,20 +145,7 @@
             margin-top: 0;
             color: #60a5fa;
             border-bottom: 1px solid #374151;
-            padding-bottom: 6px;
-        }
-
-        .filtered-item {
-            background: #1f2937;
-            padding: 8px;
-            border-radius: 6px;
-            margin-top: 6px;
-            font-size: 12px;
-            border-left: 3px solid var(--primary);
-        }
-
-        .filtered-item.high-priority {
-            border-left-color: var(--danger);
+            padding-bottom: 5px;
         }
 
         .kb-item-card {
@@ -210,30 +157,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 10px;
         }
 
         .del-btn {
             background: var(--danger);
             width: auto;
-            padding: 5px 9px;
+            padding: 4px 8px;
             font-size: 12px;
             margin-top: 0;
-            flex-shrink: 0;
-        }
-        .del-btn:hover { background: #dc2626; }
-        
-        #banMessage {
-            color: var(--danger);
-            font-weight: bold;
-            text-align: center;
-            display: none;
-            margin-top: 10px;
-        }
-
-        .row-btns {
-            display: flex;
-            gap: 8px;
         }
     </style>
 </head>
@@ -241,269 +172,240 @@
 
 <div class="container">
     <div class="header-nav">
-        <h3 id="appTitle" style="margin: 0;">🤖 AI User Space</h3>
-        <div class="nav-controls">
-            <button type="button" id="secretDevBtn" class="nav-btn">⚙️ Панель разработчика</button>
-            <button type="button" id="navToggleBtn" class="nav-btn">Вход для разработчика</button>
+        <h3 id="appTitle" style="margin:0;">🤖 AI User Space</h3>
+        <div style="display: flex; gap: 6px;">
+            <button id="secretDevBtn" class="nav-btn">⚙️ Админка</button>
+            <button id="navToggleBtn" class="nav-btn">Вход для разработчика</button>
         </div>
     </div>
 
     <!-- ПОЛЬЗОВАТЕЛЬСКАЯ СТРАНИЦА -->
     <div id="userPage" class="page active">
         <div class="mascot-box">
-            <img id="mascotImg" src="" alt="Mascot" class="mascot-avatar">
+            <img id="mascotImg" src="https://via.placeholder.com/110?text=AI" alt="Mascot" class="mascot-avatar">
             <div class="speech-bubble" id="speechBubble">Привет! Задай мне вопрос или отправь идею.</div>
         </div>
 
         <div class="section">
-            <label for="userInput"><b>Задать вопрос ИИ:</b></label>
+            <label><b>Задать вопрос ИИ:</b></label>
             <input type="text" id="userInput" placeholder="Напишите ваш вопрос...">
-            <button type="button" id="askBtn">Спросить</button>
-            <div id="banMessage"></div>
+            <button id="askBtn">Спросить</button>
         </div>
 
         <div class="section">
-            <label for="feedbackType"><b>Отправить идею, проблему или вопрос разработчику:</b></label>
+            <label><b>Отправить отзыв / идею разработчику:</b></label>
             <select id="feedbackType">
                 <option value="идея">💡 Идея</option>
                 <option value="проблема">⚠️ Проблема / Баг</option>
-                <option value="вопрос">❓ Вопрос разработчику</option>
+                <option value="вопрос">❓ Вопрос</option>
             </select>
-            <textarea id="userFeedback" placeholder="Опишите вашу идею или проблему подробно..." rows="3"></textarea>
-            <button type="button" id="sendFeedbackBtn" style="background: var(--accent);">Отправить разработчику</button>
+            <textarea id="userFeedback" placeholder="Опишите подробно..." rows="2"></textarea>
+            <button id="sendFeedbackBtn" style="background: var(--accent);">Отправить</button>
         </div>
 
         <div class="section">
-            <label><b>История поиска:</b></label>
+            <label><b>История запросов:</b></label>
             <div class="history-list" id="historyList"></div>
-            <button type="button" id="clearHistoryBtn" style="background: #64748b; font-size: 12px; padding: 7px;">Очистить историю</button>
+            <button id="clearHistoryBtn" style="background: #64748b; font-size: 11px; padding: 6px;">Очистить историю</button>
         </div>
     </div>
 
     <!-- СТРАНИЦА РАЗРАБОТЧИКА -->
     <div id="devPage" class="page">
-        <h3 style="margin: 0;">🔐 Защищенная Панель Разработчика</h3>
+        <h3 style="margin:0;">🔐 Панель Разработчика</h3>
+        
         <div id="devAuthBox">
-            <p style="font-size: 13px; color: #94a3b8; margin-bottom: 6px;">Введите пароль для доступа к настройкам:</p>
+            <p style="font-size: 13px; color: #94a3b8;">Введите пароль (по умолчанию: <code>dev2026</code>):</p>
             <input type="password" id="devPasswordInput" placeholder="Пароль...">
-            <button type="button" id="loginDevBtn" style="margin-top: 8px;">Войти</button>
-            <button type="button" id="backToUserFromAuthBtn" style="background: #64748b; margin-top: 6px;">Назад к пользователю</button>
+            <button id="loginDevBtn" style="margin-top: 8px;">Войти</button>
+            <button id="backToUserFromAuth" style="background: #64748b; margin-top: 6px;">Назад</button>
         </div>
 
         <div id="devContentBox" style="display: none;">
-            <div class="row-btns" style="margin-bottom: 15px;">
-                <button type="button" id="backToUserBtn" style="background: #64748b; font-size: 12px;">⬅️ На главную</button>
-                <button type="button" id="logoutDevBtn" style="background: var(--danger); font-size: 12px;">🔒 Выйти из панели</button>
-            </div>
+            <button id="backToUserBtn" style="background: #64748b; margin-bottom: 12px; font-size: 12px;">⬅️ На главную</button>
 
-            <!-- НАСТРОЙКА ИМЕНИ МАСКОТА -->
+            <!-- Имя маскота -->
             <div class="dev-section-box">
                 <h4>🏷️ Имя маскота</h4>
-                <input type="text" id="mascotRealName" placeholder="Введите имя маскота...">
-                <button type="button" id="saveNameBtn" style="margin-top: 8px;">Сохранить имя</button>
+                <input type="text" id="mascotRealName" placeholder="Имя маскота">
+                <button id="saveNameBtn" style="margin-top: 6px;">Сохранить имя</button>
             </div>
 
-            <!-- СТРОКА 1: Архив знаний -->
+            <!-- Архив знаний -->
             <div class="dev-section-box">
-                <h4>📁 1. Архив знаний</h4>
+                <h4>📁 Архив знаний</h4>
                 <input type="text" id="kbCategory" placeholder="Категория">
-                <input type="text" id="kbSubcategory" placeholder="Подкатегория">
-                <input type="text" id="kbKeyword" placeholder="Ключевое слово / Вопрос">
+                <input type="text" id="kbKeyword" placeholder="Ключевое слово для поиска">
                 <textarea id="kbAnswer" placeholder="Ответ ИИ..." rows="2"></textarea>
-                <button type="button" id="saveKbBtn" style="margin-top: 8px;">Сохранить / Обновить</button>
-                <div id="kbListContainer" style="margin-top: 12px; max-height: 180px; overflow-y: auto;"></div>
+                <button id="saveKbBtn" style="margin-top: 6px;">Добавить / Изменить</button>
+                <div id="kbListContainer" style="margin-top: 10px; max-height: 150px; overflow-y: auto;"></div>
             </div>
 
-            <!-- СТРОКА 2: Управление маскотом, репликами и ИЗОБРАЖЕНИЯМИ -->
+            <!-- Аналитика -->
             <div class="dev-section-box">
-                <h4>🎨 2. Настройка маскота (Реплики и Картинки)</h4>
-                <select id="mascotEmotionSelect">
-                    <option value="neutral">Нейтральный</option>
-                    <option value="joy">Радость</option>
-                    <option value="confused">Недопонимание</option>
-                    <option value="angry-1">Злость Уровень 1</option>
-                    <option value="angry-2">Злость Уровень 2</option>
-                    <option value="angry-3">Злость Уровень 3 (Бан)</option>
-                </select>
-                <input type="text" id="mascotCustomText" placeholder="Текст реплики для выбранного настроения">
-                <input type="text" id="mascotCustomImg" placeholder="Ссылка или путь к картинке (.png / .jpg)">
-                <button type="button" id="saveMascotConfigBtn" style="margin-top: 8px;">Сохранить настройки настроения</button>
-            </div>
-
-            <!-- СТРОКА 3: Аналитика -->
-            <div class="dev-section-box">
-                <h4>📊 3. Аналитика отзывов</h4>
-                <div class="row-btns">
-                    <button type="button" id="refreshAnalyticsBtn" style="background: #2563eb; font-size: 12px; padding: 7px;">🔄 Обновить</button>
-                    <button type="button" id="clearAnalyticsBtn" style="background: #64748b; font-size: 12px; padding: 7px;">🗑️ Очистить</button>
-                </div>
-                <div id="analyticsContainer" style="margin-top: 10px; max-height: 200px; overflow-y: auto;"></div>
+                <h4>📊 Аналитика отзывов</h4>
+                <button id="clearAnalyticsBtn" style="background: #64748b; font-size: 12px; padding: 6px;">Очистить отзывы</button>
+                <div id="analyticsContainer" style="margin-top: 10px; max-height: 150px; overflow-y: auto;"></div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    // Безопасное чтение из localStorage
-    function loadJSON(key, defaultValue) {
-        try {
-            const raw = localStorage.getItem(key);
-            return raw ? JSON.parse(raw) : defaultValue;
-        } catch (e) {
-            return defaultValue;
-        }
-    }
-
-    const defaultKB = {
-        "привет": { cat: "Общие", sub: "Приветствия", ans: "Привет! Я твой цифровой помощник." },
-        "как дела": { cat: "Общие", sub: "Состояние", ans: "Всё отлично, обрабатываю данные!" },
-        "когда триумф восхода луны": { cat: "Секрет", sub: "Пасхалка", ans: "Поздравляю! Панель разработчика разблокирована сверху." }
+    // Базовые данные
+    let knowledgeBase = JSON.parse(localStorage.getItem('kb_data')) || {
+        "привет": { cat: "Общие", ans: "Привет! Рад тебя видеть." },
+        "как дела": { cat: "Общие", ans: "Всё отлично! Готов к работе." },
+        "когда триумф восхода луны": { cat: "Секрет", ans: "Секретная кнопка разработчика разблокирована сверху!" }
     };
 
-    const defaultMascotConfig = {
-        "neutral": { text: "Привет! Задай мне вопрос или отправь идею.", img: "https://via.placeholder.com/110/3b82f6/ffffff?text=AI" },
-        "joy": { text: "Ой, спасибо большое! Мне очень приятно слышать такие теплые слова! 🥰", img: "https://via.placeholder.com/110/10b981/ffffff?text=Joy" },
-        "confused": { text: "Я не совсем понял вопрос... Попробуй сформулировать иначе!", img: "https://via.placeholder.com/110/f59e0b/ffffff?text=?" },
-        "angry-1": { text: "Эй, полегче на поворотах! Зачем грубить? Уровень злости: 1/3.", img: "https://via.placeholder.com/110/f97316/ffffff?text=1/3" },
-        "angry-2": { text: "Ты снова за своё?! Прекрати это немедленно! Уровень злости: 2/3.", img: "https://via.placeholder.com/110/ef4444/ffffff?text=2/3" },
-        "angry-3": { text: "ВСЁ! Хватит с меня! Ты заблокирован за оскорбления на 30 минут! 😡", img: "https://via.placeholder.com/110/991b1b/ffffff?text=BAN" }
-    };
+    let mascotName = localStorage.getItem('mascot_name') || "лучик";
+    let historyList = JSON.parse(localStorage.getItem('history_data')) || [];
+    let feedbackList = JSON.parse(localStorage.getItem('feedback_data')) || [];
 
-    let knowledgeBase = loadJSON('ai_kb_v6', defaultKB);
-    let mascotName = localStorage.getItem('ai_mascot_name_v6') || "лучик";
-    let mascotConfig = loadJSON('ai_mascot_config_v6', defaultMascotConfig);
-    let history = loadJSON('ai_history_v6', []);
-    let userFeedbackList = loadJSON('ai_feedback_v6', []);
-    let badQueryCount = parseInt(localStorage.getItem('ai_bad_count_v6'), 10) || 0;
-    let banUntil = parseInt(localStorage.getItem('ai_ban_until_v6'), 10) || 0;
-    let banTimer = null;
-
-    // Элементы интерфейса
-    const mascotImg = document.getElementById('mascotImg');
+    // Элементы
+    const userPage = document.getElementById('userPage');
+    const devPage = document.getElementById('devPage');
+    const appTitle = document.getElementById('appTitle');
     const speechBubble = document.getElementById('speechBubble');
     const userInput = document.getElementById('userInput');
-    const askBtn = document.getElementById('askBtn');
-    const banMessage = document.getElementById('banMessage');
+    const historyContainer = document.getElementById('historyList');
 
-    mascotImg.onerror = function() {
-        this.src = 'https://via.placeholder.com/110/3b82f6/ffffff?text=AI';
-    };
-
-    function switchPage(pageName) {
-        document.getElementById('userPage').classList.remove('active');
-        document.getElementById('devPage').classList.remove('active');
-
-        if (pageName === 'user') {
-            document.getElementById('userPage').classList.add('active');
-            document.getElementById('appTitle').innerText = "🤖 AI User Space";
-            checkBanStatus();
-        } else if (pageName === 'dev') {
-            document.getElementById('devPage').classList.add('active');
-            document.getElementById('appTitle').innerText = "⚙️ Dev Hub";
+    // Переключение страниц
+    function showPage(page) {
+        userPage.classList.remove('active');
+        devPage.classList.remove('active');
+        if (page === 'user') {
+            userPage.classList.add('active');
+            appTitle.innerText = "🤖 AI User Space";
+        } else {
+            devPage.classList.add('active');
+            appTitle.innerText = "⚙️ Dev Hub";
             renderKbList();
-            loadEmotionDataForEdit();
             renderAnalytics();
         }
     }
 
-    function checkBanStatus() {
-        clearTimeout(banTimer);
-        const now = Date.now();
+    // Обработка вопросов ИИ
+    function handleAsk() {
+        let text = userInput.value.trim().toLowerCase();
+        if (!text) return;
 
-        if (now < banUntil) {
-            const minutesLeft = Math.ceil((banUntil - now) / 60000);
-            userInput.disabled = true;
-            askBtn.disabled = true;
-            banMessage.style.display = 'block';
-            banMessage.innerText = `⚠️ Вы заблокированы за оскорбления. Осталось минут: ${minutesLeft}`;
-            banTimer = setTimeout(checkBanStatus, 5000);
-        } else {
-            userInput.disabled = false;
-            askBtn.disabled = false;
-            banMessage.style.display = 'none';
-            if (banUntil !== 0) {
-                badQueryCount = 0;
-                banUntil = 0;
-                localStorage.setItem('ai_bad_count_v6', '0');
-                localStorage.setItem('ai_ban_until_v6', '0');
-            }
-        }
-    }
-
-    function speakText(text) {
-        try {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'ru-RU';
-                window.speechSynthesis.speak(utterance);
-            }
-        } catch (e) {
-            // Игнорируем ошибку синтеза речи, если браузер блокирует
-        }
-    }
-
-    function setEmotion(state, shouldSpeak = true) {
-        const configItem = mascotConfig[state] || mascotConfig["neutral"];
-        speechBubble.innerText = configItem.text;
-        mascotImg.src = configItem.img;
-
-        if (shouldSpeak) {
-            speakText(configItem.text);
-        }
-
-        mascotImg.className = "mascot-avatar";
-        if (state === 'joy') mascotImg.classList.add('joy-anim');
-        else if (state === 'confused') mascotImg.classList.add('confused-anim');
-        else if (state === 'angry-1') mascotImg.classList.add('angry-anim-1');
-        else if (state === 'angry-2') mascotImg.classList.add('angry-anim-2');
-        else if (state === 'angry-3') mascotImg.classList.add('angry-anim-3');
-    }
-
-    function askAI() {
-        if (Date.now() < banUntil) return;
-
-        const rawText = userInput.value.trim();
-        const query = rawText.toLowerCase();
-        if (!query) return;
-
-        const secretPhrase = "когда триумф восхода луны";
-        const badWords = ["дурак", "тупой", "идиот", "ненавижу", "мразь", "сука", "блять", "черт", "тупица", "урод", "дебил", "фигня", "задолбал"];
-        const compliments = ["спасибо", "пожалуйста", "лучший", "умничка", "потрясающий", "крутой", "прекрасный", "милый", "великолепно", "отлично"];
-
-        const hasBadWord = badWords.some(word => query.includes(word));
-        const hasCompliment = compliments.some(word => query.includes(word));
-        const mentionsName = query.includes(mascotName.toLowerCase());
-
-        if (query.includes(secretPhrase)) {
+        // Пасхалка для открытия админки
+        if (text.includes("когда триумф восхода луны")) {
             document.getElementById('secretDevBtn').style.display = 'inline-block';
-            const ansText = knowledgeBase[secretPhrase] ? knowledgeBase[secretPhrase].ans : "Панель разработчика разблокирована!";
-            speechBubble.innerText = ansText;
-            mascotImg.src = mascotConfig['joy'].img;
-            mascotImg.className = "mascot-avatar joy-anim";
-            speakText(ansText);
-        } else if (hasBadWord) {
-            badQueryCount++;
-            localStorage.setItem('ai_bad_count_v6', String(badQueryCount));
-
-            if (badQueryCount === 1) {
-                setEmotion('angry-1', true);
-            } else if (badQueryCount >= 2 && badQueryCount < 5) {
-                setEmotion('angry-2', true);
-            } else if (badQueryCount >= 5) {
-                banUntil = Date.now() + (30 * 60 * 1000);
-                localStorage.setItem('ai_ban_until_v6', String(banUntil));
-                setEmotion('angry-3', true);
-                checkBanStatus();
-            }
-        } else if (hasCompliment) {
-            setEmotion('joy', true);
-        } else if (!mentionsName) {
-            const confText = "Хм, кажется, ты забыл обратиться ко мне по имени...";
-            speechBubble.innerText = confText;
-            mascotImg.src = mascotConfig['confused'].img;
-            mascotImg.className = "mascot-avatar confused-anim";
-            speakText(confText);
+            speechBubble.innerText = knowledgeBase["когда триумф восхода луны"].ans;
         } else {
-            const foundKey = Object.keys(knowledgeBase).find(key => query.includes(key))
+            let foundKey = Object.keys(knowledgeBase).find(key => text.includes(key));
+            if (foundKey) {
+                speechBubble.innerText = knowledgeBase[foundKey].ans;
+            } else {
+                speechBubble.innerText = "Я пока не знаю ответ на этот вопрос, но записал его!";
+            }
+        }
+
+        historyList.unshift(userInput.value);
+        if (historyList.length > 15) historyList.pop();
+        localStorage.setItem('history_data', JSON.stringify(historyList));
+        updateHistoryUI();
+        userInput.value = "";
+    }
+
+    function updateHistoryUI() {
+        historyContainer.innerHTML = historyList.map(item => `<div>• ${item}</div>`).join('') || '<div style="color:#64748b">Пусто</div>';
+    }
+
+    // Управление базой знаний в админке
+    function renderKbList() {
+        let container = document.getElementById('kbListContainer');
+        container.innerHTML = Object.keys(knowledgeBase).map(key => `
+            <div class="kb-item-card">
+                <div><b>[${knowledgeBase[key].cat}]</b> ${key}</div>
+                <button class="del-btn" onclick="deleteKb('${key}')">Удалить</button>
+            </div>
+        `).join('');
+    }
+
+    window.deleteKb = function(key) {
+        delete knowledgeBase[key];
+        localStorage.setItem('kb_data', JSON.stringify(knowledgeBase));
+        renderKbList();
+    };
+
+    function renderAnalytics() {
+        let container = document.getElementById('analyticsContainer');
+        container.innerHTML = feedbackList.map(f => `<div style="background:#1f2937; padding:6px; margin-top:4px; border-radius:4px; font-size:12px;"><b>[${f.type}]</b> ${f.text}</div>`).join('') || '<div style="color:#64748b; font-size:12px;">Нет отзывов</div>';
+    }
+
+    // Привязка кнопок через безопасный JS (гарантирует работу)
+    document.getElementById('askBtn').addEventListener('click', handleAsk);
+    userInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleAsk(); });
+
+    document.getElementById('navToggleBtn').addEventListener('click', () => showPage('dev'));
+    document.getElementById('secretDevBtn').addEventListener('click', () => showPage('dev'));
+    document.getElementById('backToUserBtn').addEventListener('click', () => showPage('user'));
+    document.getElementById('backToUserFromAuth').addEventListener('click', () => showPage('user'));
+
+    document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+        historyList = [];
+        localStorage.removeItem('history_data');
+        updateHistoryUI();
+    });
+
+    document.getElementById('sendFeedbackBtn').addEventListener('click', () => {
+        let type = document.getElementById('feedbackType').value;
+        let text = document.getElementById('userFeedback').value.trim();
+        if (!text) return alert('Введите текст отзыва!');
+        feedbackList.unshift({ type, text });
+        localStorage.setItem('feedback_data', JSON.stringify(feedbackList));
+        document.getElementById('userFeedback').value = "";
+        alert('Спасибо! Отзыв отправлен разработчику.');
+    });
+
+    document.getElementById('loginDevBtn').addEventListener('click', () => {
+        let pass = document.getElementById('devPasswordInput').value;
+        if (pass === "dev2026") {
+            document.getElementById('devAuthBox').style.display = 'none';
+            document.getElementById('devContentBox').style.display = 'block';
+            document.getElementById('devPasswordInput').value = "";
+        } else {
+            alert('Неверный пароль!');
+        }
+    });
+
+    document.getElementById('saveNameBtn').addEventListener('click', () => {
+        let name = document.getElementById('mascotRealName').value.trim();
+        if (name) {
+            mascotName = name;
+            localStorage.setItem('mascot_name', mascotName);
+            alert('Имя сохранено!');
+        }
+    });
+
+    document.getElementById('saveKbBtn').addEventListener('click', () => {
+        let cat = document.getElementById('kbCategory').value.trim();
+        let key = document.getElementById('kbKeyword').value.trim().toLowerCase();
+        let ans = document.getElementById('kbAnswer').value.trim();
+        if (!cat || !key || !ans) return alert('Заполните все поля!');
+        knowledgeBase[key] = { cat, ans };
+        localStorage.setItem('kb_data', JSON.stringify(knowledgeBase));
+        renderKbList();
+        alert('Запись добавлена!');
+        document.getElementById('kbCategory').value = "";
+        document.getElementById('kbKeyword').value = "";
+        document.getElementById('kbAnswer').value = "";
+    });
+
+    document.getElementById('clearAnalyticsBtn').addEventListener('click', () => {
+        feedbackList = [];
+        localStorage.removeItem('feedback_data');
+        renderAnalytics();
+    });
+
+    // Инициализация при старте
+    document.getElementById('mascotRealName').value = mascotName;
+    updateHistoryUI();
+</script>
+
+</body>
+</html>
